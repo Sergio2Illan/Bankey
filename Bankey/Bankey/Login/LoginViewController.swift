@@ -14,6 +14,13 @@ class LoginViewController: UIViewController {
     private let loginView = LoginView()
     private let signInButton = UIButton(type: .system)
     private let errorMessageLabel = UILabel()
+    
+    var username: String? {
+        return loginView.usernameTextField.text
+    }
+    var password: String? {
+        return loginView.passwordTextField.text
+    }
 
     //MARK: - Init
     override func viewDidLoad() {
@@ -45,7 +52,7 @@ extension LoginViewController {
        errorMessageLabel.textColor = .systemRed
        errorMessageLabel.numberOfLines = 0
        errorMessageLabel.isHidden = false
-       errorMessageLabel.text = "Error Failure"
+       //errorMessageLabel.text = "Error Failure"
     }
     
     
@@ -66,7 +73,7 @@ extension LoginViewController {
          NSLayoutConstraint.activate([
             signInButton.topAnchor.constraint(equalToSystemSpacingBelow: loginView.bottomAnchor, multiplier: 2),
             signInButton.leadingAnchor.constraint(equalToSystemSpacingAfter: loginView.leadingAnchor, multiplier: 1),
-            signInButton.trailingAnchor.constraint(equalToSystemSpacingAfter: loginView.trailingAnchor, multiplier: 1)
+            loginView.trailingAnchor.constraint(equalToSystemSpacingAfter: signInButton.trailingAnchor, multiplier: 1)
         ])
         
         //Label
@@ -84,6 +91,31 @@ extension LoginViewController {
 extension LoginViewController {
     
     @objc private func signInTapped(sender: UIButton){
+        errorMessageLabel.isHidden = true
+        login()
         
+    }
+    
+    private func login(){
+        guard let username = username, let password = password else {
+            assertionFailure("Username / Password  should never be nil")
+            return
+        }
+        
+        if username.isEmpty || password.isEmpty {
+            configureView(withMessage: "Username / Password cannot be blank")
+            return
+        }
+        
+        if username == "Kevin" && password == "Welcome" {
+            signInButton.configuration?.showsActivityIndicator = true
+        } else {
+            configureView(withMessage: "Username / Password are not correct")
+        }
+    }
+    
+    private func configureView(withMessage message: String) {
+        errorMessageLabel.text = message
+        errorMessageLabel.isHidden = false
     }
 }
